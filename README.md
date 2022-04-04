@@ -1,4 +1,4 @@
-# Apuntes del curso
+# Apuntes del curso de Git y Github de Patzi
 
 # Comados para git
 
@@ -123,7 +123,42 @@ Establece el origen en el repositorio remoto
 
 `git remote set-url origin "url en SSH"` Para cambiar la url a SSH
 
-# git clone
+# git rebase
+Es tomar una rama completa y pegarla a la rama main, sin hacer merge. Es muy mala práctica enviarlo a servidores remotos, solo se debería hacer de manera local
+
+Se usa de la siguiente manera
+1. Cambiamos a la rama que queremos traer los cambios
+`git checkout experiment`
+2. Aplicamos rebase para traer los cambios de la rama que queremos 
+`git rebase master`
+
+## git stash
+Se usa cuando realizas cambios en la rama main, necesitas volver a una rama anterior pero no quieres hacer commit aún estos cambios. El stashed nos sirve para guardar cambios para después
+
+`git stash list` Para observar el lugar temporal donde quedan los cambios que no he realizado
+
+`git stash pop` Abre el estado temporal guardado
+
+`git stash branch "nombre de la rama"` Para poner los cambios guardados temporalmente en una rama en específico, sea nueva o antigua
+
+`git stash drop` Borra esos cambios temporales (sirve en caso de que hayan sido un error)
+
+## git clean
+
+`git clean --dry-run` Para asegurarse de los archivos que van a ser borrados
+
+`git clean -f` Para borrar todos los archivos listados (que no son carpetas)
+
+NOTA: Ten en cuenta que no serán borrados archivos cuya extensión este en el .gitignore ya que son ignorados para todos los casos
+
+## git cherry-pick
+Sirve para traer commit especpificos a una rama. Cuando por ejemplo la rama en la que se hicieron estos commits no está terminada pero necesitas un commit en especial para la rama main.
+
+`git cherry-pick IDCommit`
+
+Es considerado mala práctica porque es como reconstruir la historia :(
+
+## git clone
 Con este comando puedes clonar un repositorio online en tu pc
 
 `git clone "url del repositorio"`
@@ -135,6 +170,62 @@ Con este comando puedes clonar un repositorio online en tu pc
 `eval $(ssh-agent -s)` Para saber si el servidor está corriendo
 
 `ssh-add ~/.ssh/id_rsa` Agregar la llave
+
+# Amend
+
+A veces hacemos un commit, pero resulta que no queríamos mandarlo porque faltaba algo más. Utilizamos `git commit --amend`
+
+amend en inglés es remendar y lo que hará es que los cambios que hicimos nos los agregará al commit anterior.
+
+# Reflogs
+Git guarda todos los cambios aunque decidas borrarlos, al borrar un cambio lo que estás haciendo sólo es actualizar la punta del branch, para gestionar éstas puntas existe un mecanismo llamado registros de referencia o reflogs
+
+`git reflog` Muestra el historial completo del proyecto con los respectivos HEAD, copia el HEAD al que quieres volver y a continuación sigue el reset.
+
+# Reset
+
+`git reset --soft HashDelHEAD` te mantiene lo que tengas en staging ahí.
+
+`git reset --hard HashDelHEAD` resetea absolutamente todo incluyendo lo que tengas en staging
+
+git reset es una mala práctica, no deberías usarlo en ningún momento; debe ser nuestro último recurso.
+
+# Búsqueda en archivos de git
+A medida que nuestro proyecto se hace grande vamos a querer buscar ciertas cosas.
+
+Por ejemplo: ¿cuántas veces en nuestro proyecto utilizamos la palabra color?
+
+Para buscar utilizamos el comando `git grep color` y nos buscará en todo el proyecto los archivos en donde está la palabra color.
+
+Con `git grep -n color` nos saldrá un output el cual nos dirá en qué línea está lo que estamos buscando.
+
+Con `git grep -c color` nos saldrá un output el cual nos dirá cuántas veces se repite esa palabra y en qué archivo.
+
+Si queremos buscar cuántas veces utilizamos un atributo de HTML lo hacemos con `git grep -c "<p>"`.
+
+`git log -S "cabecera"`  cuantas veces use la palabra cabecera en todos los commits.
+
+grep -> archivos
+
+log -> commits
+
+# Comandos colaborativos
+
+`git shortlog -sn` muestra cuantos commit han hecho cada miembros del equipo.
+
+`git shortlog -sn --all` muestra cuantos commit han hecho cada miembros del equipo hasta los que han sido eliminado
+
+`git shortlog -sn --all --no-merge` muestra cuantos commit han hecho cada miembros quitando los eliminados sin los merges
+
+`git blame ARCHIVO` muestra quien hizo cada cosa linea por linea
+
+`git COMANDO --help` muestra como funciona el comando.
+
+`git blame ARCHIVO -Llinea_inicial,linea_final` muestra quien hizo cada cosa linea por linea indicándole desde que linea ver ejemplo -L35,50
+
+`git branch -r` se muestran todas las ramas remotas
+
+`git branch -a` se muestran todas las ramas tanto locales como remotas
 
 # Alias
 
